@@ -25,7 +25,8 @@ impl Default for App {
             removeThumb: RetainedImage::from_image_bytes(
                 "remove",
                 include_bytes!("../assets/remove_thumb.png"),
-            ).unwrap(),
+            )
+            .unwrap(),
             bodies: (|| {
                 // TODO: Move to a build script or read from file at startup
                 let mut images: HashMap<String, Image> = HashMap::new();
@@ -74,9 +75,11 @@ impl Default for App {
                 // TODO: Move to a build script or read from file at startup
                 let mut images: HashMap<String, Image> = HashMap::new();
 
-                let image =
-                    RetainedImage::from_image_bytes("top", include_bytes!("../assets/hats/top.png"))
-                        .unwrap();
+                let image = RetainedImage::from_image_bytes(
+                    "top",
+                    include_bytes!("../assets/hats/top.png"),
+                )
+                .unwrap();
                 let thumb = RetainedImage::from_image_bytes(
                     "orange",
                     include_bytes!("../assets/hats/top_thumb.png"),
@@ -174,17 +177,17 @@ impl eframe::App for App {
                 //     crab.show(ui);
                 // });
 
-                ui.collapsing(RichText::new("Hats").size(20.0), |ui|{
+                ui.collapsing(RichText::new("Hats").size(20.0), |ui| {
                     egui::Grid::new("hats").show(ui, |ui| {
                         if ui
-                        .add(egui::ImageButton::new(
-                            removeThumb.texture_id(ctx),
-                            removeThumb.size_vec2(),
-                        ))
-                        .clicked()
-                    {
-                        ferris.hat = None
-                    };
+                            .add(egui::ImageButton::new(
+                                removeThumb.texture_id(ctx),
+                                removeThumb.size_vec2(),
+                            ))
+                            .clicked()
+                        {
+                            ferris.hat = None
+                        };
 
                         for (name, image) in hats.iter() {
                             if ui
