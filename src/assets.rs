@@ -9,6 +9,7 @@ pub struct Image {
 pub struct Assets {
     pub colors: HashMap<String, Image>,
     pub hats: HashMap<String, Image>,
+    pub remove_thumb: RetainedImage,
 }
 
 macro_rules! load_image {
@@ -22,7 +23,7 @@ macro_rules! load_image {
                 )
                 .unwrap(),
                 thumb: RetainedImage::from_image_bytes(
-                    "{x}_thumb",
+                    concat!($file, "_thumb"),
                     include_bytes!(concat!("../assets/", $path, "/", $file, "_thumb.png")),
                 )
                 .unwrap(),
@@ -52,6 +53,14 @@ impl Assets {
             hats.insert(i.0, i.1);
         }
 
-        Assets { colors, hats }
+        let remove_thumb =
+            RetainedImage::from_image_bytes("remove", include_bytes!("../assets/remove_thumb.png"))
+                .unwrap();
+
+        Assets {
+            colors,
+            hats,
+            remove_thumb,
+        }
     }
 }

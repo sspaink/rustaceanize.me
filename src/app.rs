@@ -1,6 +1,5 @@
 use crate::assets::Assets;
 use egui::RichText;
-use egui_extras::RetainedImage;
 
 struct Body {
     color: String,
@@ -8,7 +7,6 @@ struct Body {
 }
 
 pub struct App {
-    remove_thumb: RetainedImage,
     assets: Assets,
     ferris: Body,
 }
@@ -16,11 +14,6 @@ pub struct App {
 impl Default for App {
     fn default() -> Self {
         Self {
-            remove_thumb: RetainedImage::from_image_bytes(
-                "remove",
-                include_bytes!("../assets/remove_thumb.png"),
-            )
-            .unwrap(),
             assets: Assets::new(),
             ferris: Body {
                 color: "orange".to_string(),
@@ -41,11 +34,7 @@ impl eframe::App for App {
     /// Called each time the UI needs repainting, which may be many times per second.
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let Self {
-            remove_thumb,
-            assets,
-            ferris,
-        } = self;
+        let Self { assets, ferris } = self;
 
         #[cfg(not(target_arch = "wasm32"))] // no File->Quit on web pages!
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
@@ -93,8 +82,8 @@ impl eframe::App for App {
                     egui::Grid::new("hats").show(ui, |ui| {
                         if ui
                             .add(egui::ImageButton::new(
-                                remove_thumb.texture_id(ctx),
-                                remove_thumb.size_vec2(),
+                                assets.remove_thumb.texture_id(ctx),
+                                assets.remove_thumb.size_vec2(),
                             ))
                             .clicked()
                         {
@@ -131,7 +120,7 @@ impl eframe::App for App {
                 }
             });
 
-        egui::Area::new("my_area").movable(false).show(ctx, |ui| {
+        egui::Area::new("body").movable(false).show(ctx, |ui| {
             ui.centered_and_justified(|ui| {
                 if let Some(image) = assets.colors.get(&ferris.color) {
                     // TODO how to use show_scaled when window resizes???
@@ -140,7 +129,7 @@ impl eframe::App for App {
             });
         });
 
-        egui::Area::new("my_area").movable(false).show(ctx, |ui| {
+        egui::Area::new("body").movable(false).show(ctx, |ui| {
             ui.centered_and_justified(|ui| {
                 if let Some(hat) = &ferris.hat {
                     if let Some(image) = assets.hats.get(hat) {
