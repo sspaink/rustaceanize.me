@@ -1,11 +1,6 @@
+use crate::assets::Assets;
 use egui::RichText;
 use egui_extras::RetainedImage;
-use std::collections::HashMap;
-
-struct Image {
-    main: RetainedImage,
-    thumb: RetainedImage,
-}
 
 struct Body {
     color: String,
@@ -13,91 +8,23 @@ struct Body {
 }
 
 pub struct App {
-    removeThumb: RetainedImage,
-    bodies: HashMap<String, Image>,
-    hats: HashMap<String, Image>,
+    remove_thumb: RetainedImage,
+    assets: Assets,
     ferris: Body,
 }
 
 impl Default for App {
     fn default() -> Self {
         Self {
-            removeThumb: RetainedImage::from_image_bytes(
+            remove_thumb: RetainedImage::from_image_bytes(
                 "remove",
                 include_bytes!("../assets/remove_thumb.png"),
             )
             .unwrap(),
-            bodies: (|| {
-                // TODO: Move to a build script or read from file at startup
-                let mut images: HashMap<String, Image> = HashMap::new();
-
-                let image = RetainedImage::from_image_bytes(
-                    "purple",
-                    include_bytes!("../assets/colors/purple.png"),
-                )
-                .unwrap();
-
-                let thumb = RetainedImage::from_image_bytes(
-                    "orange",
-                    include_bytes!("../assets/colors/purple_thumb.png"),
-                )
-                .unwrap();
-                images.insert(
-                    "purple".to_string(),
-                    Image {
-                        main: image,
-                        thumb: thumb,
-                    },
-                );
-
-                let image = RetainedImage::from_image_bytes(
-                    "orange",
-                    include_bytes!("../assets/colors/orange.png"),
-                )
-                .unwrap();
-
-                let thumb = RetainedImage::from_image_bytes(
-                    "orange",
-                    include_bytes!("../assets/colors/orange_thumb.png"),
-                )
-                .unwrap();
-                images.insert(
-                    "orange".to_string(),
-                    Image {
-                        main: image,
-                        thumb: thumb,
-                    },
-                );
-
-                images
-            })(),
-            hats: (|| {
-                // TODO: Move to a build script or read from file at startup
-                let mut images: HashMap<String, Image> = HashMap::new();
-
-                let image = RetainedImage::from_image_bytes(
-                    "top",
-                    include_bytes!("../assets/hats/top.png"),
-                )
-                .unwrap();
-                let thumb = RetainedImage::from_image_bytes(
-                    "orange",
-                    include_bytes!("../assets/hats/top_thumb.png"),
-                )
-                .unwrap();
-                images.insert(
-                    "top".to_string(),
-                    Image {
-                        main: image,
-                        thumb: thumb,
-                    },
-                );
-
-                images
-            })(),
+            assets: Assets::new(),
             ferris: Body {
                 color: "orange".to_string(),
-                hat: Some("top".to_string()),
+                hat: None,
             },
         }
     }
@@ -105,33 +32,18 @@ impl Default for App {
 
 impl App {
     /// Called once before the first frame.
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        // This is also where you can customize the look and feel of egui using
-        // `cc.egui_ctx.set_visuals` and `cc.egui_ctx.set_fonts`.
-
-        // Load previous app state (if any).
-        // Note that you must enable the `persistence` feature for this to work.
-        // if let Some(storage) = cc.storage {
-        //     return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
-        // }
-
+    pub fn new(_: &eframe::CreationContext<'_>) -> Self {
         Default::default()
     }
 }
 
 impl eframe::App for App {
-    // /// Called by the frame work to save state before shutdown.
-    // fn save(&mut self, storage: &mut dyn eframe::Storage) {
-    //     eframe::set_value(storage, eframe::APP_KEY, self);
-    // }
-
     /// Called each time the UI needs repainting, which may be many times per second.
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         let Self {
-            removeThumb,
-            bodies,
-            hats,
+            remove_thumb,
+            assets,
             ferris,
         } = self;
 
@@ -153,7 +65,7 @@ impl eframe::App for App {
             .show(ctx, |ui| {
                 ui.collapsing(RichText::new("Body").size(20.0), |ui| {
                     egui::Grid::new("bodies").show(ui, |ui| {
-                        for (name, image) in bodies.iter() {
+                        for (name, image) in assets.colors.iter() {
                             if ui
                                 .add(egui::ImageButton::new(
                                     image.thumb.texture_id(ctx),
@@ -181,15 +93,15 @@ impl eframe::App for App {
                     egui::Grid::new("hats").show(ui, |ui| {
                         if ui
                             .add(egui::ImageButton::new(
-                                removeThumb.texture_id(ctx),
-                                removeThumb.size_vec2(),
+                                remove_thumb.texture_id(ctx),
+                                remove_thumb.size_vec2(),
                             ))
                             .clicked()
                         {
                             ferris.hat = None
                         };
 
-                        for (name, image) in hats.iter() {
+                        for (name, image) in assets.hats.iter() {
                             if ui
                                 .add(egui::ImageButton::new(
                                     image.thumb.texture_id(ctx),
@@ -221,9 +133,9 @@ impl eframe::App for App {
 
         egui::Area::new("my_area").movable(false).show(ctx, |ui| {
             ui.centered_and_justified(|ui| {
-                if let Some(image) = bodies.get(&ferris.color) {
+                if let Some(image) = assets.colors.get(&ferris.color) {
                     // TODO how to use show_scaled when window resizes???
-                    image.main.show(ui);
+                    image.main.show_max_size(ui, ui.available_size());
                 }
             });
         });
@@ -231,8 +143,8 @@ impl eframe::App for App {
         egui::Area::new("my_area").movable(false).show(ctx, |ui| {
             ui.centered_and_justified(|ui| {
                 if let Some(hat) = &ferris.hat {
-                    if let Some(image) = hats.get(hat) {
-                        image.main.show(ui);
+                    if let Some(image) = assets.hats.get(hat) {
+                        image.main.show_max_size(ui, ui.available_size());
                     }
                 }
             });
