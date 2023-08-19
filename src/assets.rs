@@ -52,9 +52,6 @@ impl Assets {
             hats.insert(i.0, i.1);
         }
 
-        Assets {
-            colors: colors,
-            hats: hats,
-        }
+        Assets { colors, hats }
     }
 }
