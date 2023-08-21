@@ -7,6 +7,7 @@ const MAX_ROW: i32 = 2;
 
 struct Body {
     color: Option<String>,
+    eyes: Option<String>,
     hat: Option<String>,
 }
 
@@ -21,6 +22,7 @@ impl Default for App {
             assets: Assets::new(),
             ferris: Body {
                 color: Some("orange".to_string()),
+                eyes: Some("happy".to_string()),
                 hat: None,
             },
         }
@@ -54,6 +56,15 @@ impl eframe::App for App {
                     &assets.remove_thumb,
                 );
                 display_thumbnails(
+                    "Eyes",
+                    &mut ferris.eyes,
+                    ctx,
+                    ui,
+                    &assets.eyes,
+                    false,
+                    &assets.remove_thumb,
+                );
+                display_thumbnails(
                     "Hat",
                     &mut ferris.hat,
                     ctx,
@@ -74,6 +85,7 @@ impl eframe::App for App {
             });
 
         display_bodyparts(ctx, &mut ferris.color, &assets.colors);
+        display_bodyparts(ctx, &mut ferris.eyes, &assets.eyes);
         display_bodyparts(ctx, &mut ferris.hat, &assets.hats);
 
         egui::CentralPanel::default().show(ctx, |_| {});

@@ -8,6 +8,7 @@ pub struct Image {
 
 pub struct Assets {
     pub colors: HashMap<String, Image>,
+    pub eyes: HashMap<String, Image>,
     pub hats: HashMap<String, Image>,
     pub remove_thumb: RetainedImage,
 }
@@ -40,10 +41,19 @@ impl Assets {
             load_image!("colors", "purple"),
             load_image!("colors", "orange"),
             load_image!("colors", "green"),
+            load_image!("colors", "blue"),
         ];
 
         for i in images {
             colors.insert(i.0, i.1);
+        }
+
+        let mut eyes: HashMap<String, Image> = HashMap::new();
+
+        let images = [load_image!("eyes", "happy"), load_image!("eyes", "girl")];
+
+        for i in images {
+            eyes.insert(i.0, i.1);
         }
 
         let mut hats: HashMap<String, Image> = HashMap::new();
@@ -60,6 +70,7 @@ impl Assets {
 
         Assets {
             colors,
+            eyes,
             hats,
             remove_thumb,
         }
