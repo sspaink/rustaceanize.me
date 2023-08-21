@@ -39,6 +39,7 @@ impl Assets {
         let images = [
             load_image!("colors", "purple"),
             load_image!("colors", "orange"),
+            load_image!("colors", "green"),
         ];
 
         for i in images {

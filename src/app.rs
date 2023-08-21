@@ -1,8 +1,12 @@
-use crate::assets::Assets;
+use crate::assets::{Assets, Image};
 use egui::RichText;
+use egui_extras::RetainedImage;
+use std::collections::HashMap;
+
+const MAX_ROW: i32 = 2;
 
 struct Body {
-    color: String,
+    color: Option<String>,
     hat: Option<String>,
 }
 
@@ -16,7 +20,7 @@ impl Default for App {
         Self {
             assets: Assets::new(),
             ferris: Body {
-                color: "orange".to_string(),
+                color: Some("orange".to_string()),
                 hat: None,
             },
         }
@@ -36,79 +40,28 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         let Self { assets, ferris } = self;
 
-        #[cfg(not(target_arch = "wasm32"))] // no File->Quit on web pages!
-        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
-            // The top panel is often a good place for a menu bar:
-            egui::menu::bar(ui, |ui| {
-                ui.menu_button("File", |ui| {
-                    if ui.button("Quit").clicked() {
-                        _frame.close();
-                    }
-                });
-            });
-        });
-
         egui::SidePanel::left("side_panel")
             .resizable(false)
             .min_width(200.0)
             .show(ctx, |ui| {
-                ui.collapsing(RichText::new("Body").size(20.0), |ui| {
-                    egui::Grid::new("bodies").show(ui, |ui| {
-                        for (name, image) in assets.colors.iter() {
-                            if ui
-                                .add(egui::ImageButton::new(
-                                    image.thumb.texture_id(ctx),
-                                    image.thumb.size_vec2(),
-                                ))
-                                .clicked()
-                            {
-                                ferris.color = name.to_string();
-                            };
-                        }
-
-                        // crab.show(ui);
-                        // crab.show(ui);
-                        // ui.end_row();
-                        // crab.show(ui);
-                        // crab.show(ui);
-                    });
-                });
-
-                // ui.collapsing(RichText::new("Eyes").size(20.0), |ui|{
-                //     crab.show(ui);
-                // });
-
-                ui.collapsing(RichText::new("Hats").size(20.0), |ui| {
-                    egui::Grid::new("hats").show(ui, |ui| {
-                        if ui
-                            .add(egui::ImageButton::new(
-                                assets.remove_thumb.texture_id(ctx),
-                                assets.remove_thumb.size_vec2(),
-                            ))
-                            .clicked()
-                        {
-                            ferris.hat = None
-                        };
-
-                        for (name, image) in assets.hats.iter() {
-                            if ui
-                                .add(egui::ImageButton::new(
-                                    image.thumb.texture_id(ctx),
-                                    image.thumb.size_vec2(),
-                                ))
-                                .clicked()
-                            {
-                                ferris.hat = Some(name.to_string());
-                            };
-                        }
-
-                        // crab.show(ui);
-                        // crab.show(ui);
-                        // ui.end_row();
-                        // crab.show(ui);
-                        // crab.show(ui);
-                    });
-                });
+                display_thumbnails(
+                    "Color",
+                    &mut ferris.color,
+                    ctx,
+                    ui,
+                    &assets.colors,
+                    false,
+                    &assets.remove_thumb,
+                );
+                display_thumbnails(
+                    "Hat",
+                    &mut ferris.hat,
+                    ctx,
+                    ui,
+                    &assets.hats,
+                    true,
+                    &assets.remove_thumb,
+                );
 
                 if ui.button("save").clicked() {
                     ui.ctx().output_mut(|o| {
@@ -120,32 +73,71 @@ impl eframe::App for App {
                 }
             });
 
-        egui::Area::new("body").movable(false).show(ctx, |ui| {
-            ui.centered_and_justified(|ui| {
-                if let Some(image) = assets.colors.get(&ferris.color) {
-                    // TODO how to use show_scaled when window resizes???
+        display_bodyparts(ctx, &mut ferris.color, &assets.colors);
+        display_bodyparts(ctx, &mut ferris.hat, &assets.hats);
+
+        egui::CentralPanel::default().show(ctx, |_| {});
+    }
+}
+
+fn display_thumbnails(
+    id: &str,
+    active: &mut Option<String>,
+    ctx: &egui::Context,
+    ui: &mut egui::Ui,
+    assets: &HashMap<String, Image>,
+    removable: bool,
+    remove_thumb: &RetainedImage,
+) {
+    ui.collapsing(RichText::new(id).size(20.0), |ui| {
+        egui::Grid::new(id).show(ui, |ui| {
+            let mut current = 0;
+
+            for (name, image) in assets.iter() {
+                if removable
+                    && ui
+                        .add(egui::ImageButton::new(
+                            remove_thumb.texture_id(ctx),
+                            remove_thumb.size_vec2(),
+                        ))
+                        .clicked()
+                {
+                    *active = None
+                };
+
+                if ui
+                    .add(egui::ImageButton::new(
+                        image.thumb.texture_id(ctx),
+                        image.thumb.size_vec2(),
+                    ))
+                    .clicked()
+                {
+                    *active = Some(name.clone());
+                };
+
+                current += 1;
+
+                if current == MAX_ROW {
+                    ui.end_row();
+                    current = 0;
+                }
+            }
+        });
+    });
+}
+
+fn display_bodyparts(
+    ctx: &egui::Context,
+    current: &mut Option<String>,
+    assets: &HashMap<String, Image>,
+) {
+    egui::Area::new("body").movable(false).show(ctx, |ui| {
+        ui.centered_and_justified(|ui| {
+            if let Some(hat) = &current {
+                if let Some(image) = assets.get(hat) {
                     image.main.show_max_size(ui, ui.available_size());
                 }
-            });
+            }
         });
-
-        egui::Area::new("body").movable(false).show(ctx, |ui| {
-            ui.centered_and_justified(|ui| {
-                if let Some(hat) = &ferris.hat {
-                    if let Some(image) = assets.hats.get(hat) {
-                        image.main.show_max_size(ui, ui.available_size());
-                    }
-                }
-            });
-        });
-
-        if false {
-            egui::Window::new("Window").show(ctx, |ui| {
-                ui.label("Windows can be moved by dragging them.");
-                ui.label("They are automatically sized based on contents.");
-                ui.label("You can turn on resizing and scrolling if you like.");
-                ui.label("You would normally choose either panels OR windows.");
-            });
-        }
-    }
+    });
 }
