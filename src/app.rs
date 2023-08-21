@@ -74,7 +74,7 @@ impl eframe::App for App {
                     &assets.remove_thumb,
                 );
 
-                if ui.button("save").clicked() {
+                if ui.button(RichText::new("save").size(20.0)).clicked() {
                     ui.ctx().output_mut(|o| {
                         o.open_url = Some(egui::output::OpenUrl {
                             url: "https://github.com".to_string(),
