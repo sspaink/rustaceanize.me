@@ -1,11 +1,12 @@
 use crate::assets::{Assets, Image};
-use eframe::glow::COLOR;
-use egui::{Color32, RichText};
+use egui::RichText;
 use egui_extras::RetainedImage;
 use std::collections::HashMap;
+use struct_iterable::Iterable;
 
 const MAX_ROW: i32 = 2;
 
+#[derive(Iterable)]
 struct Body {
     color: Option<String>,
     eyes: Option<String>,
@@ -76,9 +77,24 @@ impl eframe::App for App {
                 );
 
                 if ui.button(RichText::new("save").size(20.0)).clicked() {
+
+                    let mut name: String = "".to_owned();
+
+                    for (field_name, value) in ferris.iter() {
+                        if let Some(string_opt) = value.downcast_ref::<Option<String>>() {
+                            if let Some(string) = string_opt.as_deref() {
+                                if field_name == "color" {
+                                    name += string;
+                                } else {
+                                    name += &format!("_{}", string);
+                                }
+                            }
+                        }
+                    }
+
                     ui.ctx().output_mut(|o| {
                         o.open_url = Some(egui::output::OpenUrl {
-                            url: "https://github.com".to_string(),
+                            url: format!("https://raw.githubusercontent.com/sspaink/rustaceanize.me/master/pregen_crabs/{name}.png"),
                             new_tab: true,
                         });
                     });

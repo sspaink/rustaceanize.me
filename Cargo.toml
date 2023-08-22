@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.65"
 
+[workspace]
+
+members = ["image_gen"]
+
 [dependencies]
 egui = "0.22.0"
 eframe = { version = "0.22.0", default-features = false, features = [
@@ -15,6 +19,7 @@ log = "0.4"
 
 egui_extras = { version = "0.22.0", features = ["image"] }
 image = { version = "0.24.7", features = ["png"] }
+struct_iterable = "0.1.1"
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

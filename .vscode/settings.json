@@ -1,5 +1,0 @@
-{
-    "rust-analyzer.linkedProjects": [
-        ".\\image_gen\\Cargo.toml"
-    ]
-}
