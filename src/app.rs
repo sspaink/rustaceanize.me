@@ -76,31 +76,38 @@ impl eframe::App for App {
                     &assets.remove_thumb,
                 );
 
-                if ui.button(RichText::new("save").size(20.0)).clicked() {
+                ui.vertical_centered_justified(|ui| {
+                    if ui.button(RichText::new("save").size(30.0)).clicked() {
 
-                    let mut name: String = "".to_owned();
+                        let mut name: String = "".to_owned();
 
-                    for (field_name, value) in ferris.iter() {
-                        if let Some(string_opt) = value.downcast_ref::<Option<String>>() {
-                            if let Some(string) = string_opt.as_deref() {
-                                if field_name == "color" {
-                                    name += string;
-                                } else {
-                                    name += &format!("_{}", string);
+                        for (field_name, value) in ferris.iter() {
+                            if let Some(string_opt) = value.downcast_ref::<Option<String>>() {
+                                if let Some(string) = string_opt.as_deref() {
+                                    if field_name == "color" {
+                                        name += string;
+                                    } else {
+                                        name += &format!("_{}", string);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    ui.ctx().output_mut(|o| {
-                        o.open_url = Some(egui::output::OpenUrl {
-                            url: format!("https://raw.githubusercontent.com/sspaink/rustaceanize.me/master/pregen_crabs/{name}.png"),
-                            new_tab: true,
+                        ui.ctx().output_mut(|o| {
+                            o.open_url = Some(egui::output::OpenUrl {
+                                url: format!("https://raw.githubusercontent.com/sspaink/rustaceanize.me/master/pregen_crabs/{name}.png"),
+                                new_tab: true,
+                            });
                         });
-                    });
-                }
+                    }
+                });
 
                 ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
+                    ui.horizontal(|ui| {
+                        ui.spacing_mut().item_spacing.x = 0.0;
+                        ui.label("Inspired by  ");
+                        ui.hyperlink_to("gopherize.me", "https://gopherize.me/");
+                    });
                     ui.horizontal(|ui| {
                         ui.spacing_mut().item_spacing.x = 0.0;
                         ui.label("Created by  ");
@@ -126,7 +133,7 @@ fn display_thumbnails(
     removable: bool,
     remove_thumb: &RetainedImage,
 ) {
-    ui.collapsing(RichText::new(id).size(20.0), |ui| {
+    ui.collapsing(RichText::new(id).size(20.0).strong(), |ui| {
         egui::Grid::new(id).show(ui, |ui| {
             let mut current = 0;
 
