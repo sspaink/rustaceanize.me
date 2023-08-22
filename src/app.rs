@@ -109,6 +109,10 @@ impl eframe::App for App {
                 ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                     ui.horizontal(|ui| {
                         ui.spacing_mut().item_spacing.x = 0.0;
+                        ui.hyperlink_to("View on Github", "https://github.com/sspaink/rustaceanize.me");
+                    });
+                    ui.horizontal(|ui| {
+                        ui.spacing_mut().item_spacing.x = 0.0;
                         ui.label("Inspired by  ");
                         ui.hyperlink_to("gopherize.me", "https://gopherize.me/");
                     });

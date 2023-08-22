@@ -1,10 +1,10 @@
 # rustaceanize.me
 
-Make your own personal Ferris avatar <https://sspaink.github.io/rustaceanize.me/>
+:crab: Try it out: <https://sspaink.github.io/rustaceanize.me/> :crab:
+
+Make your own personal [Rust mascot](https://rustacean.net/)!
 
 ![logo](pregen_crabs/orange_happy_top.png)
-
-This project was inspired by [gopherize.me](https://gopherize.me/).
 
 This project was created using the template repo for [eframe](https://github.com/emilk/egui/tree/master/crates/eframe), a framework for writing apps using [egui](https://github.com/emilk/egui/).
 
