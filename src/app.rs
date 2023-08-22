@@ -99,6 +99,14 @@ impl eframe::App for App {
                         });
                     });
                 }
+
+                ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
+                    ui.horizontal(|ui| {
+                        ui.spacing_mut().item_spacing.x = 0.0;
+                        ui.label("Created by  ");
+                        ui.hyperlink_to("Sebastian Spaink", "https://www.linkedin.com/in/sebastianspaink/");
+                    });
+                });
             });
 
         display_bodyparts(ctx, &mut ferris.color, &assets.colors);
