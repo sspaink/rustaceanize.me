@@ -1,4 +1,4 @@
-# rustaceanize.me
+# [rustaceanize.me](https://sspaink.github.io/rustaceanize.me/)
 
 :crab: Try it out: <https://sspaink.github.io/rustaceanize.me/> :crab:
 

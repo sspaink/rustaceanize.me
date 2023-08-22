@@ -53,7 +53,11 @@ impl Assets {
 
         let mut eyes: HashMap<String, Image> = HashMap::new();
 
-        let images = [load_image!("eyes", "happy"), load_image!("eyes", "girl")];
+        let images = [
+            load_image!("eyes", "happy"),
+            load_image!("eyes", "girl"),
+            load_image!("eyes", "angry"),
+        ];
         category_count.push(images.len());
 
         for i in images {
@@ -62,7 +66,7 @@ impl Assets {
 
         let mut hats: HashMap<String, Image> = HashMap::new();
 
-        let images = [load_image!("hats", "top")];
+        let images = [load_image!("hats", "top"), load_image!("hats", "bow")];
         category_count.push(images.len() + 1);
 
         for i in images {

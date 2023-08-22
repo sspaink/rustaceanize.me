@@ -144,19 +144,21 @@ fn display_thumbnails(
     ui.collapsing(RichText::new(id).size(20.0).strong(), |ui| {
         egui::Grid::new(id).show(ui, |ui| {
             let mut current = 0;
+            if removable {
+                current += 1;
+            }
+            if removable
+                && ui
+                    .add(egui::ImageButton::new(
+                        remove_thumb.texture_id(ctx),
+                        remove_thumb.size_vec2(),
+                    ))
+                    .clicked()
+            {
+                *active = None
+            };
 
             for (name, image) in assets.iter() {
-                if removable
-                    && ui
-                        .add(egui::ImageButton::new(
-                            remove_thumb.texture_id(ctx),
-                            remove_thumb.size_vec2(),
-                        ))
-                        .clicked()
-                {
-                    *active = None
-                };
-
                 if ui
                     .add(egui::ImageButton::new(
                         image.thumb.texture_id(ctx),
