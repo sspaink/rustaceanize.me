@@ -1,5 +1,6 @@
 use crate::assets::{Assets, Image};
-use egui::RichText;
+use eframe::glow::COLOR;
+use egui::{Color32, RichText};
 use egui_extras::RetainedImage;
 use std::collections::HashMap;
 
