@@ -102,6 +102,10 @@ impl eframe::App for App {
                     }
                 });
 
+                ui.horizontal(|ui| {
+                    ui.label(format!("There are {} possible combinations!", assets.total_combinations));
+                });
+
                 ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                     ui.horizontal(|ui| {
                         ui.spacing_mut().item_spacing.x = 0.0;

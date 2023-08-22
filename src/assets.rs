@@ -7,6 +7,7 @@ pub struct Image {
 }
 
 pub struct Assets {
+    pub total_combinations: u64,
     pub colors: HashMap<String, Image>,
     pub eyes: HashMap<String, Image>,
     pub hats: HashMap<String, Image>,
@@ -36,6 +37,7 @@ macro_rules! load_image {
 impl Assets {
     pub fn new() -> Assets {
         let mut colors: HashMap<String, Image> = HashMap::new();
+        let mut category_count = Vec::new();
 
         let images = [
             load_image!("colors", "purple"),
@@ -43,6 +45,7 @@ impl Assets {
             load_image!("colors", "green"),
             load_image!("colors", "blue"),
         ];
+        category_count.push(images.len());
 
         for i in images {
             colors.insert(i.0, i.1);
@@ -51,6 +54,7 @@ impl Assets {
         let mut eyes: HashMap<String, Image> = HashMap::new();
 
         let images = [load_image!("eyes", "happy"), load_image!("eyes", "girl")];
+        category_count.push(images.len());
 
         for i in images {
             eyes.insert(i.0, i.1);
@@ -59,6 +63,7 @@ impl Assets {
         let mut hats: HashMap<String, Image> = HashMap::new();
 
         let images = [load_image!("hats", "top")];
+        category_count.push(images.len() + 1);
 
         for i in images {
             hats.insert(i.0, i.1);
@@ -68,7 +73,14 @@ impl Assets {
             RetainedImage::from_image_bytes("remove", include_bytes!("../assets/remove_thumb.png"))
                 .unwrap();
 
+        let mut total_combinations: u64 = 1;
+
+        for c in category_count {
+            total_combinations *= c as u64;
+        }
+
         Assets {
+            total_combinations,
             colors,
             eyes,
             hats,
