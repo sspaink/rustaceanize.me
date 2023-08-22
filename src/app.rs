@@ -11,6 +11,7 @@ struct Body {
     color: Option<String>,
     eyes: Option<String>,
     hat: Option<String>,
+    facial_hair: Option<String>,
 }
 
 pub struct App {
@@ -26,6 +27,7 @@ impl Default for App {
                 color: Some("orange".to_string()),
                 eyes: Some("happy".to_string()),
                 hat: None,
+                facial_hair: None,
             },
         }
     }
@@ -72,6 +74,15 @@ impl eframe::App for App {
                     ctx,
                     ui,
                     &assets.hats,
+                    true,
+                    &assets.remove_thumb,
+                );
+                display_thumbnails(
+                    "Facial Hair",
+                    &mut ferris.facial_hair,
+                    ctx,
+                    ui,
+                    &assets.facial_hair,
                     true,
                     &assets.remove_thumb,
                 );
@@ -127,6 +138,7 @@ impl eframe::App for App {
         display_bodyparts(ctx, &mut ferris.color, &assets.colors);
         display_bodyparts(ctx, &mut ferris.eyes, &assets.eyes);
         display_bodyparts(ctx, &mut ferris.hat, &assets.hats);
+        display_bodyparts(ctx, &mut ferris.facial_hair, &assets.facial_hair);
 
         egui::CentralPanel::default().show(ctx, |_| {});
     }

@@ -11,6 +11,7 @@ pub struct Assets {
     pub colors: HashMap<String, Image>,
     pub eyes: HashMap<String, Image>,
     pub hats: HashMap<String, Image>,
+    pub facial_hair: HashMap<String, Image>,
     pub remove_thumb: RetainedImage,
 }
 
@@ -73,6 +74,15 @@ impl Assets {
             hats.insert(i.0, i.1);
         }
 
+        let mut facial_hair: HashMap<String, Image> = HashMap::new();
+
+        let images = [load_image!("facial_hair", "mustache")];
+        category_count.push(images.len() + 1);
+
+        for i in images {
+            facial_hair.insert(i.0, i.1);
+        }
+
         let remove_thumb =
             RetainedImage::from_image_bytes("remove", include_bytes!("../assets/remove_thumb.png"))
                 .unwrap();
@@ -88,6 +98,7 @@ impl Assets {
             colors,
             eyes,
             hats,
+            facial_hair,
             remove_thumb,
         }
     }

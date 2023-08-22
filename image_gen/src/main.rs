@@ -53,6 +53,10 @@ fn main() {
 
     merged.extend(merge(&merged, &hats));
 
+    let facial_hair: HashMap<String, DynamicImage> = load_images("facial_hair");
+
+    merged.extend(merge(&merged, &facial_hair));
+
     for (name, image) in merged {
         image.save(format!("{ROOT_DIR}/{name}.png")).unwrap();
     }

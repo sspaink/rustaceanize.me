@@ -2,7 +2,7 @@
 
 :crab: Try it out: <https://sspaink.github.io/rustaceanize.me/> :crab:
 
-Make your own personal [Rust mascot](https://rustacean.net/)!
+Make your own custom [Rust mascot](https://rustacean.net/)!
 
 ![logo](pregen_crabs/orange_happy_top.png)
 
