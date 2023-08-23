@@ -50,42 +50,44 @@ impl eframe::App for App {
             .resizable(false)
             .min_width(200.0)
             .show(ctx, |ui| {
-                display_thumbnails(
-                    "Color",
-                    &mut ferris.color,
-                    ctx,
-                    ui,
-                    &assets.colors,
-                    false,
-                    &assets.remove_thumb,
-                );
-                display_thumbnails(
-                    "Eyes",
-                    &mut ferris.eyes,
-                    ctx,
-                    ui,
-                    &assets.eyes,
-                    false,
-                    &assets.remove_thumb,
-                );
-                display_thumbnails(
-                    "Hat",
-                    &mut ferris.hat,
-                    ctx,
-                    ui,
-                    &assets.hats,
-                    true,
-                    &assets.remove_thumb,
-                );
-                display_thumbnails(
-                    "Facial Hair",
-                    &mut ferris.facial_hair,
-                    ctx,
-                    ui,
-                    &assets.facial_hair,
-                    true,
-                    &assets.remove_thumb,
-                );
+                egui::ScrollArea::vertical().show(ui, |ui| {
+                    display_thumbnails(
+                        "Color",
+                        &mut ferris.color,
+                        ctx,
+                        ui,
+                        &assets.colors,
+                        false,
+                        &assets.remove_thumb,
+                    );
+                    display_thumbnails(
+                        "Eyes",
+                        &mut ferris.eyes,
+                        ctx,
+                        ui,
+                        &assets.eyes,
+                        false,
+                        &assets.remove_thumb,
+                    );
+                    display_thumbnails(
+                        "Hat",
+                        &mut ferris.hat,
+                        ctx,
+                        ui,
+                        &assets.hats,
+                        true,
+                        &assets.remove_thumb,
+                    );
+                    display_thumbnails(
+                        "Facial Hair",
+                        &mut ferris.facial_hair,
+                        ctx,
+                        ui,
+                        &assets.facial_hair,
+                        true,
+                        &assets.remove_thumb,
+                    );
+                });
 
                 ui.vertical_centered_justified(|ui| {
                     if ui.button(RichText::new("save").size(30.0)).clicked() {
